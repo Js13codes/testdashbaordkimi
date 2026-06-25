@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARKA Dental Center | Dashboard</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dark">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo-area">
+    <div class="logo-icon">🦷</div>
+    <div class="logo-text">
+      <h1>ARKA Dental Center</h1>
+      <p>Bookkeeping & Finance Dashboard</p>
+    </div>
+  </div>
+
+  <div class="toggle-switch">
+    <span class="switch-label">View:</span>
+    <div class="switch-track" onclick="togglePhaseGroup()">
+      <div class="switch-thumb left" id="switchThumb">Phase 1-2</div>
+      <div class="switch-text">
+        <span>Phase 1-2</span>
+        <span>Phase 3-4</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">☀️</button>
+</div>
+
+<!-- PHASE 1: DASHBOARD -->
+<div class="phase active" id="phase1">
+  <div class="phase-container">
+    <div class="summary-grid">
+      <div class="summary-card income">
+        <div class="label">Gross Income</div>
+        <div class="value" id="p1-gross">₱0.00</div>
+      </div>
+      <div class="summary-card expense">
+        <div class="label">Total Expenses</div>
+        <div class="value" id="p1-expenses">₱0.00</div>
+      </div>
+      <div class="summary-card net">
+        <div class="label">Net Income</div>
+        <div class="value" id="p1-net">₱0.00</div>
+      </div>
+      <div class="summary-card margin">
+        <div class="label">Profit Margin</div>
+        <div class="value" id="p1-margin">0%</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;">
+      <div class="card">
+        <div class="card-title">📊 Income vs Expenses vs Net</div>
+        <canvas id="barChart" style="width:100%;height:240px;"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-title">🍩 Profit Distribution</div>
+        <canvas id="donutChart" style="width:100%;height:240px;"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📈 Daily Income Trend (June 2026)</div>
+      <canvas id="lineChart" style="width:100%;height:300px;"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 2: DATA ENTRY -->
+<div class="phase" id="phase2">
+  <div class="phase-container">
+    <div style="display:flex;gap:12px;margin-bottom:24px;">
+      <button class="btn btn-pink" onclick="switchPhase(1)">← Back to Dashboard</button>
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-card income">
+        <div class="label">Total Income</div>
+        <div class="value" id="p2-income">₱0.00</div>
+      </div>
+      <div class="summary-card expense">
+        <div class="label">Total Expenses</div>
+        <div class="value" id="p2-expenses">₱0.00</div>
+      </div>
+      <div class="summary-card net">
+        <div class="label">Net Income</div>
+        <div class="value" id="p2-net">₱0.00</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <div class="card-title">📋 Income Table (June 2026)</div>
+        <button class="btn btn-pink" onclick="addIncomeRow()">+ Add Row</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th><th>DMD</th><th>Patient</th><th>Procedure</th><th>Lab</th>
+              <th>Disc</th><th>Paid</th><th>%</th><th>Term</th><th>CC</th><th>HMO</th><th>Gross</th><th>Net</th>
+            </tr>
+          </thead>
+          <tbody id="incomeTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">💰 Admin Expenses Entry</div>
+      <div class="expense-entry" style="margin-top:16px;">
+        <input type="date" id="expDate" value="2026-06-01">
+        <select id="expType">
+          <option value="">Select Type</option>
+          <option>Rent (70sqm)</option><option>Water Bill</option><option>Wifi</option>
+          <option>Mobile Bill</option><option>Electric Bill</option><option>Dental Supplies</option>
+          <option>Assistant Salary</option><option>Food</option><option>Misc</option>
+          <option>Marketing/Ads</option><option>Equipment</option><option>Lab Fee</option>
+          <option>Tax</option><option>Other</option>
+        </select>
+        <input type="text" id="expDesc" placeholder="Description">
+        <input type="number" id="expAmount" placeholder="Amount">
+        <button class="btn btn-teal" onclick="addExpense()">+ Add</button>
+      </div>
+      <div class="table-wrap" style="margin-top:20px;">
+        <table>
+          <thead>
+            <tr><th>#</th><th>Date</th><th>Type</th><th>Desc</th><th>Amount</th><th>Category</th><th>Action</th></tr>
+          </thead>
+          <tbody id="expenseTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🧮 Formula Reference</div>
+      <div style="background:var(--bg-dark);border:1px solid var(--border-dark);border-radius:12px;padding:20px;font-family:'Courier New',monospace;font-size:0.85rem;color:var(--muted-dark);line-height:2;">
+        <span style="color:var(--pink);font-weight:bold;">INCOME</span> = Lab Fee + HMO + Amount Paid<br>
+        <span style="color:var(--pink);font-weight:bold;">EXPENSES</span> = Fixed + Reducible<br>
+        <span style="color:var(--pink);font-weight:bold;">NET</span> = INCOME - EXPENSES
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 3: PAYSTUB + ATTENDANCE + CALENDAR + YTD -->
+<div class="phase" id="phase3">
+  <div class="phase-container">
+    <div style="display:flex;gap:12px;margin-bottom:24px;">
+      <button class="btn btn-pink" onclick="switchPhase(4)">Phase 4: Receipt Storage →</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">💰 Paystub (June 2026)</div>
+      <div class="paystub-grid" id="paystubContainer"></div>
+      <div style="margin-top:20px;padding:16px;background:#0f172a;border-radius:12px;font-size:0.85rem;color:var(--muted-dark);border:1px solid var(--border-dark);">
+        ⚠️ Advisory: Sample computation. Actual deductions may vary based on BIR, SSS, PhilHealth, Pag-IBIG tables.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📅 Attendance Logger (June 2026)</div>
+      <div style="font-size:0.85rem;color:var(--muted-dark);margin-bottom:12px;">Click day to toggle: 🟢 Present | 🔴 Absent | 🟡 Leave</div>
+      <div id="attendanceContainer"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🗓️ Calendar & Leave Tracker</div>
+      <div id="calendarContainer"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📊 Year-to-Date Summary</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Employee</th><th>Role</th><th>Earnings</th><th>Deductions</th><th>Net</th><th>YTD</th></tr>
+          </thead>
+          <tbody id="ytdTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 4: RECEIPT STORAGE -->
+<div class="phase" id="phase4">
+  <div class="phase-container">
+    <div style="display:flex;gap:12px;margin-bottom:24px;">
+      <button class="btn btn-pink" onclick="switchPhase(3)">← Back to Paystub</button>
+    </div>
+
+    <div class="folder-grid">
+      <!-- FOLDER 1: EXCEL UPLOAD -->
+      <div class="card folder-card" onclick="document.getElementById('excelInput').click()">
+        <div class="folder-icon">📊</div>
+        <h3>Excel Data Import</h3>
+        <p>Drop Excel files here to auto-import income & expense data into Phase 1 & 2</p>
+        <div class="dropzone" style="margin-top:20px;">
+          <div class="dropzone-icon">📁</div>
+          <div style="font-size:1rem;font-weight:700;color:var(--pink);">Click or Drop Excel Files</div>
+          <div style="font-size:0.8rem;color:var(--muted-dark);margin-top:8px;">.xlsx, .xls, .csv supported</div>
+        </div>
+        <input type="file" id="excelInput" style="display:none;" accept=".xlsx,.xls,.csv" multiple onchange="handleExcelUpload(event)">
+        <div id="excelFileList" style="margin-top:20px;text-align:left;"></div>
+      </div>
+
+      <!-- FOLDER 2: RECEIPT STORAGE -->
+      <div class="card folder-card" onclick="document.getElementById('receiptInput').click()">
+        <div class="folder-icon">🧾</div>
+        <h3>Receipt Storage</h3>
+        <p>Drop receipts or screenshots. System auto-categorizes by time & type.</p>
+        <div class="dropzone" style="margin-top:20px;">
+          <div class="dropzone-icon">📷</div>
+          <div style="font-size:1rem;font-weight:700;color:var(--pink);">Click or Drop Receipts</div>
+          <div style="font-size:0.8rem;color:var(--muted-dark);margin-top:8px;">.jpg, .png, .pdf supported</div>
+        </div>
+        <input type="file" id="receiptInput" style="display:none;" accept="image/*,.pdf" multiple onchange="handleReceiptUpload(event)">
+        <div id="receiptFileList" style="margin-top:20px;text-align:left;"></div>
+      </div>
+    </div>
+
+    <!-- Receipt Gallery -->
+    <div class="card" style="margin-top:24px;">
+      <div class="card-title">🗄️ Stored Receipts</div>
+      <div id="receiptGallery" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT TOGGLE -->
+<button class="edit-toggle" id="editToggle" onclick="toggleEdit()">✏️</button>
+
+<!-- SCRIPTS -->
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/phase1.js"></script>
+<script src="js/phase2.js"></script>
+<script src="js/phase3.js"></script>
+<script src="js/phase4.js"></script>
+
+</body>
+</html>
